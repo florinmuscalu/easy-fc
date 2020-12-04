@@ -53,11 +53,11 @@
   color: #FFFFFF;
   text-align: center;
   font-size: 24px;
-  padding: 0px;
-  width: 100px;
+  padding: 10px;
   transition: all 0.5s;
   cursor: pointer;
   margin: 5px;
+  line-height: unset;
 }
 
 .flashcard_btn_correct{
@@ -69,11 +69,11 @@
   color: #000;
   text-align: center;
   font-size: 24px;
-  padding: 0px;
-  width: 110px;
+  padding: 10px;
   transition: all 0.5s;
   cursor: pointer;
   margin: 5px;
+  line-height: unset;
 }
 
 .flashcard_btn_yes{
@@ -84,11 +84,11 @@
   color: #000;
   text-align: center;
   font-size: 24px;
-  padding: 0px;
-  width: 50px;
+  padding: 10px;
   transition: all 0.5s;
   cursor: pointer;
   margin: 5px;
+  line-height: unset;
 }
 
 .flashcard_btn_wrong{
@@ -100,11 +100,11 @@
   color: #FFFFFF;
   text-align: center;
   font-size: 24px;
-  padding: 0px;
-  width: 110px;
+  padding: 10px;
   transition: all 0.5s;
   cursor: pointer;
   margin: 5px;
+  line-height: unset;
 }
 
 .flashcard_btn_no{
@@ -115,11 +115,11 @@
   color: #FFFFFF;
   text-align: center;
   font-size: 24px;
-  padding: 0px;
-  width: 50px;
+  padding: 10px;
   transition: all 0.5s;
   cursor: pointer;
   margin: 5px;
+  line-height: unset;
 }
 .flashcart_btn_start{
   display: inline-block;
@@ -136,6 +136,7 @@
   cursor: pointer;
   margin: 1px;
   text-transform:initial;
+  line-height: unset;
 }
 
 .flashcart_btn_start span {

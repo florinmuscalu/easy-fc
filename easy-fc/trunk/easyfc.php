@@ -30,6 +30,9 @@ function easyfc_scripts(){
 		'easyfc_correct_answers_text2' => get_option('easyfc_correct_answers_text2'),
 		'easyfc_questions_total' => get_option('easyfc_questions_total'),
 		'easyfc_front_textsize' => get_option('easyfc_front_textsize'),
+		'easyfc_back_textsize' => get_option('easyfc_back_textsize'),
+		'easyfc_latest_try' => get_option('easyfc_latest_try'),
+		'easyfc_correct_latest' => get_option('easyfc_correct_latest'),
     );
     wp_localize_script('easyfc-script', 'fc_options', $scriptData);
 	
@@ -61,7 +64,7 @@ function easyfc_build($atts,$content=null){
 		if (isset ($v["font_front"])) {
 			$Q->font_front = $v["font_front"];	
 		}
-		$Q->font_back = get_option('easyfc_front_textsize');	
+		$Q->font_back = get_option('easyfc_back_textsize');	
 		if (isset ($v["font_back"])) {
 			$Q->font_back = $v["font_back"];	
 		}
@@ -71,19 +74,17 @@ function easyfc_build($atts,$content=null){
 		}
 		array_push($list, $Q);
 	};	
+		
+	$ret ='<script type="text/javascript">';
+	$ret = $ret . 'instance++;';
+	$ret = $ret . 'sets.push(new flashcards(instance,"' . $atts['title'] . '"));';
+	$ret = $ret . 'sets[instance].amount = ' . count($list) . ';';
 	
-	?>
-	
-	<script type="text/javascript">
-		instance++;
-		sets.push(new flashcards(instance,"<?php echo $atts['title']; ?>"));
-		sets[instance].amount = <?php echo count($list);?>;
-		<?php 
-			for ($c=0;$c<count($list);$c++) 
-				echo "sets[instance].cards.push({q:'",$list[$c]->q,"', font_front:'",$list[$c]->font_front,"', font_back:'",$list[$c]->font_back,"', height:'",$list[$c]->height,"', a:'",$list[$c]->a,"',correct:0});\n";  
-		?>
-	</script>
-	
+	for ($c=0;$c<count($list);$c++) 
+		$ret = $ret . "sets[instance].cards.push({q:'" . $list[$c]->q . "', font_front:'" . $list[$c]->font_front . "', font_back:'" . $list[$c]->font_back . "', height:'" . $list[$c]->height . "', a:'" . $list[$c]->a . "',correct:0});\n";  
+		
+	$ret = $ret . '</script>';
+	$ret = $ret . '
 	<div id="fc_start" class="flashcard_start">
 		<button id="fc_start_btn" class="flashcart_btn_start">
 			<script type="text/javascript">
@@ -92,16 +93,15 @@ function easyfc_build($atts,$content=null){
 				}
 				else{
 					
-					document.write(fc_setStartBtnText(sets[instance].title, sets[instance].amount, "Ultima încercare: "+getCookie(sets[instance].title)+" răspunsuri corecte."));
+					document.write(fc_setStartBtnText(sets[instance].title, sets[instance].amount, "' . get_option('easyfc_latest_try') . ': "+getCookie(sets[instance].title)+" ' . get_option('easyfc_correct_latest') . '."));
 				}
 			</script>
 		</button>
 	</div>
 	<div id="fc_main" class="flashcard_main">
-		<div class="flashcard_header"><?php echo $atts['title'];?></div>
-		
+		<div class="flashcard_header">' . $atts['title'] . '</div>
 		<div id="fc_flip" class="flipCard"> 
-  			<div id="fc_content" class="card" onclick="this.classList.toggle('flipped');"> 
+  			<div id="fc_content" class="card" onclick="this.classList.toggle(\'flipped\');"> 
     			<div id="fc_content_front" class="side front"></div> 
     			<div id="fc_content_back" class="side back"></div> 
   			</div> 
@@ -109,45 +109,67 @@ function easyfc_build($atts,$content=null){
 		
 		<div id="fc_footer" class="flashcard_footer"></div>
 		<div class="flashcard_buttons">
-			<button id="fc_btn_corect" class="flashcard_btn_correct" ><?php echo get_option( 'easyfc_correct_btn' ); ?></button>
-			<button id="fc_btn_gresit" class="flashcard_btn_wrong" > <?php echo get_option( 'easyfc_wrong_btn' ); ?></button>
-			<button id="fc_btn_reset" class="flashcard_btn_reset" style="align:left"><?php echo get_option( 'easyfc_reset_btn' ); ?></button>
+			<button id="fc_btn_corect" class="flashcard_btn_correct" >' . get_option('easyfc_correct_btn') . '</button>
+			<button id="fc_btn_gresit" class="flashcard_btn_wrong" >' . get_option( 'easyfc_wrong_btn' ) . '</button>
+			<button id="fc_btn_reset" class="flashcard_btn_reset" style="align:left">' . get_option( 'easyfc_reset_btn' ) . '</button>
 		</div>
 	</div>
 	
 	<div id="fc_finish" class="flashcard_finish" style="display:none">
-		<h3><?php echo $atts['title'];?></h3>
+		<h3>' . $atts['title'] . '</h3>
 		<p id="fc_message"></p>
 		<div id="fc_repeat">
-			<p><?php echo get_option( 'easyfc_repeat_wrong_text' ); ?></p>
+			<p>' . get_option( 'easyfc_repeat_wrong_text' ) . '</p>
 			<div>
-				<button id="fc_repeat_btn" class="flashcard_btn_yes"><?php echo get_option( 'easyfc_yes_btn' ); ?></button>
-				<button id="fc_repeat_btn_nu_" class="flashcard_btn_no"><?php echo get_option( 'easyfc_no_btn' ); ?></button>
+				<button id="fc_repeat_btn" class="flashcard_btn_yes">' . get_option( 'easyfc_yes_btn' ) . '</button>
+				<button id="fc_repeat_btn_nu_" class="flashcard_btn_no">' . get_option( 'easyfc_no_btn' ) . '</button>
 			</div>
 		</div>
 		<div id="fc_repeat_test">
-			<p><?php echo get_option( 'easyfc_repeat_all_text' ); ?></p>
+			<p>' . get_option( 'easyfc_repeat_all_text' ) . '</p>
 			<div>
-				<button id="fc_repeat_test_btn" class="flashcard_btn_yes"><?php echo get_option( 'easyfc_yes_btn' ); ?></button>
-				<button id="fc_repeat_btn_nu1_" class="flashcard_btn_no"><?php echo get_option( 'easyfc_no_btn' ); ?></button>
+				<button id="fc_repeat_test_btn" class="flashcard_btn_yes">' . get_option( 'easyfc_yes_btn' ) . '</button>
+				<button id="fc_repeat_btn_nu1_" class="flashcard_btn_no">' . get_option( 'easyfc_no_btn' ) . '</button>
 			</div>
 		</div>
 	</div>
 	 
 	<script type="text/javascript">
 		sets[instance].fc_setDivs();
-	</script>
-	 <?php
+	</script>';
+	return $ret;
 }
+
 	if (! is_admin() ) {
 		add_action( 'wp_enqueue_scripts', 'easyfc_scripts' );
 		add_shortcode("easyfc", "easyfc_build");
 	}
-
+	add_action( 'init', 'set_default_options' );
 	add_action( 'admin_menu', 'easy_fc_info_menu' );  
+ 
+	function set_default_options() {
+    	if (get_option('easyfc_correct_btn', '1') == '1') update_option('easyfc_correct_btn', 'Correct');
+		if (get_option('easyfc_wrong_btn', '1') == '1') update_option('easyfc_wrong_btn', 'Wrong');
+		if (get_option('easyfc_reset_btn', '1') == '1') update_option('easyfc_reset_btn', 'Reset');
+		if (get_option('easyfc_questions_text', '1') == '1') update_option('easyfc_questions_text', 'questions');
+		if (get_option('easyfc_yes_btn', '1') == '1') update_option('easyfc_yes_btn', 'Yes');
+		if (get_option('easyfc_no_btn', '1') == '1') update_option('easyfc_no_btn', 'No');
+		if (get_option('easyfc_question_text', '1') == '1') update_option('easyfc_question_text', 'Question');
+		if (get_option('easyfc_correct_answers_text', '1') == '1') update_option('easyfc_correct_answers_text', 'Correct answers');
+		if (get_option('easyfc_correct_all_text', '1') == '1') update_option('easyfc_correct_all_text', 'all the questions');
+		if (get_option('easyfc_repeat_all_text', '1') == '1') update_option('easyfc_repeat_all_text', 'Do you want to repeat the test?');
+		if (get_option('easyfc_repeat_wrong_text', '1') == '1') update_option('easyfc_repeat_wrong_text', 'Do you want to repeat the questions you answered incorrectly?');
+		if (get_option('easyfc_correct_answers_text2', '1') == '1') update_option('easyfc_correct_answers_text2', 'You correctly answered');
+		if (get_option('easyfc_questions_total', '1') == '1') update_option('easyfc_questions_total', 'questions out of');
+		if (get_option('easyfc_front_textsize', '1') == '1') update_option('easyfc_front_textsize', '32');
+		if (get_option('easyfc_back_textsize', '1') == '1') update_option('easyfc_back_textsize', '32');
+		if (get_option('easyfc_latest_try', '1') == '1') update_option('easyfc_latest_try', 'Latest try');
+		if (get_option('easyfc_correct_latest', '1') == '1') update_option('easyfc_correct_latest', 'correct answers');
+     }
+
 	function easy_fc_info_menu(){    
-		$page_title = 'Easy fc Options';   
-		$menu_title = 'Easy fc';   
+		$page_title = 'Easy Flashcards Options';   
+		$menu_title = 'Easy Flashcards';   
 		$capability = 'manage_options';   
 		$menu_slug  = 'easy-fc-settings';   
 		$function   = 'easy_fc_info_page';   
@@ -196,8 +218,18 @@ function easyfc_build($atts,$content=null){
 		
 		$args = array('type' => 'string', 'default' => "questions out of");
 		register_setting( 'easyfc-settings', 'easyfc_questions_total', $args ); 
+		
 		$args = array('type' => 'integer', 'default' => 32);
 		register_setting( 'easyfc-settings', 'easyfc_front_textsize', $args ); 
+		
+		$args = array('type' => 'integer', 'default' => 32);
+		register_setting( 'easyfc-settings', 'easyfc_back_textsize', $args ); 
+		
+		$args = array('type' => 'string', 'default' => 'Latest try');
+		register_setting( 'easyfc-settings', 'easyfc_latest_try', $args );
+		
+		$args = array('type' => 'string', 'default' => 'correct answers');
+		register_setting( 'easyfc-settings', 'easyfc_correct_latest', $args );
 	}
 
 	function easy_fc_info_page(){ 
@@ -261,6 +293,18 @@ function easyfc_build($atts,$content=null){
 					<tr valign="top">       
 						<th scope="row" style="width:300px">Front card text size:</th>       
 						<td> <input type="text" style="width:50px" name="easyfc_front_textsize" value="<?php echo get_option( 'easyfc_front_textsize' ); ?>"/></td>       
+					</tr>
+					<tr valign="top">       
+						<th scope="row" style="width:300px">Back card text size:</th>       
+						<td> <input type="text" style="width:50px" name="easyfc_back_textsize" value="<?php echo get_option( 'easyfc_back_textsize' ); ?>"/></td>       
+					</tr>
+					<tr valign="top">       
+						<th scope="row" style="width:300px">"Latest try" text:</th>       
+						<td> <input type="text" style="width:400px" name="easyfc_latest_try" value="<?php echo get_option( 'easyfc_latest_try' ); ?>"/></td>       
+					</tr>
+					<tr valign="top">       
+						<th scope="row" style="width:300px">"correct answers" text:</th>       
+						<td> <input type="text" style="width:400px" name="easyfc_correct_latest" value="<?php echo get_option( 'easyfc_correct_latest' ); ?>"/></td>       
 					</tr>
 				</table>     
 				<?php submit_button(); ?>   </form>  

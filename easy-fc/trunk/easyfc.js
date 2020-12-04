@@ -109,7 +109,7 @@ function flashcards(id,title) {
 	}
 	this.fc_stop = function() {
 		setCookie(this.title, this.correct.length, 30);
-		$("fc_start_btn"+this.id).innerHTML = fc_setStartBtnText(this.title, this.amount, "Ultima încercare: "+this.correct.length+" răspunsuri corecte.");
+		$("fc_start_btn"+this.id).innerHTML = fc_setStartBtnText(this.title, this.amount, fc_options.easyfc_latest_try+": "+this.correct.length+" " + fc_options.easyfc_correct_latest +".");
 		sets.forEach(element => $("fc_start"+element.id).style.display = "block");
 		this.fc_reset_flip();
 		this.correct = [];
@@ -129,7 +129,7 @@ function flashcards(id,title) {
 	// div-display setting when starting a quiz
 	this.fc_start = function (){
 		this.yScroll = window.scrollY;
-		window.scroll(0,0);
+		//window.scroll(0,0);
 		setCookie(this.title, "0", 30);
 		sets.forEach(element => $("fc_start"+element.id).style.display = "none");
 		this.cards = shuffle(this.cards);
