@@ -5,7 +5,7 @@ Description: Easily integrate flashcards in your posts and pages
 Version: 1.0
 Author: Florin Muscalu
 Author URI: http://www.florinm.ro
-Plugin URI: http://florinm.ro/easy-flashcards-wordpress-plugin/
+Plugin URI: https://florinm.ro/flashcards/
 License: MIT License
 License URI: http://opensource.org/licenses/MIT
 

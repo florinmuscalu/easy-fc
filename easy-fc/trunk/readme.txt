@@ -29,8 +29,8 @@ And that's it. If you want to customize the look, modify easyfc.css.
 
 == Screenshots ==
 
-1. http://florinm.ro/wp-content/uploads/2020/12/easyfc_screenshot_1.jpg
-2. http://florinm.ro/wp-content/uploads/2020/12/easyfc_screenshot_2.jpg
+1. Front of the card
+2. Back of the card
 
 == Changelog ==
 
